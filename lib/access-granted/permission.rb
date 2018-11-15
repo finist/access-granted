@@ -20,9 +20,9 @@ module AccessGranted
       subject == @subject || subject.class <= @subject
     end
 
-    def matches_conditions?(subject)
+    def matches_conditions?(subject, options = {})
       if @block
-        @block.call(subject, @user)
+        @block.call(subject, @user, options)
       elsif !@conditions.empty?
         matches_hash_conditions?(subject)
       else

@@ -27,25 +27,26 @@ module AccessGranted
       r
     end
 
-    def can?(action, subject = nil)
+    def can?(action, subject = nil, options = {})
       cache[action] ||= {}
+      cache_key = [subject, options]
 
-      if cache[action][subject]
-        cache[action][subject]
+      if cache[action][cache_key]
+        cache[action][cache_key]
       else
-        granted, actions = check_permission(action, subject)
+        granted, actions = check_permission(action, subject, options)
         actions.each do |a|
           cache[a] ||= {}
-          cache[a][subject] ||= granted
+          cache[a][cache_key] ||= granted
         end
 
         granted
       end
     end
 
-    def check_permission(action, subject)
+    def check_permission(action, subject, options = {})
       applicable_roles.each do |role|
-        permission = role.find_permission(action, subject)
+        permission = role.find_permission(action, subject, options)
         return [permission.granted, permission.actions] if permission
       end
 

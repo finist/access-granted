@@ -27,11 +27,11 @@ module AccessGranted
       add_permission(false, action, subject, conditions, block)
     end
 
-    def find_permission(action, subject)
+    def find_permission(action, subject, options = {})
       permissions.detect do |permission|
         permission.action == action &&
           permission.matches_subject?(subject) &&
-            permission.matches_conditions?(subject)
+            permission.matches_conditions?(subject, options)
       end
     end
 
